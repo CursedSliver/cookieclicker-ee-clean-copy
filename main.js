@@ -1368,7 +1368,7 @@ Game.Launch=function()
 	AddEvent(l('topbarFrenzy'), 'click', function() {
 		if (Game.freeFrenzyCountdown > 0) { return; }
 		Game.freeFrenzyCountdown = 5 * 60 * Game.fps;
-		var s = new Game.shimmer();
+		var s = new Game.shimmer('golden');
 
         var totalProbability = Game.freeFrenzyProbabilityTable.reduce((sum, effect) => sum + effect.probability, 0); //idk why chatgpt decided to do this but ok, gotta keep it consistent you know
         var random = Math.random() * totalProbability;
