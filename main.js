@@ -1305,6 +1305,91 @@ Game.Launch=function()
 		easterDay=Math.floor((easterDay-new Date(easterDay.getFullYear(),0,0))/(1000*60*60*24));
 		if (day>=easterDay-7 && day<=easterDay) Game.baseSeason='easter';
 	}
+
+	Game.freeFrenzyCountdown = 0;
+	Game.freeFrenzyProbabilityTable = [
+            {
+            	name: 'frenzy',
+                probability: 0.15
+            },
+            {
+                name: 'multiply cookies',
+                probability: 0.1
+            },
+            {
+                name: 'ruin cookies',
+                probability: 0.05
+            },
+            {
+                name: 'blood frenzy',
+                probability: 0.05
+            },
+            {
+                name: 'clot',
+                probability: 0.1
+            },
+            {
+                name: 'click frenzy',
+                probability: 0.1
+            },
+            {
+                name: 'cursed finger',
+                probability: 0.05
+            },
+            {
+                name: 'chain cookie',
+                probability: 0.05
+            },
+            {
+                name: 'cookie storm',
+                probability: 0.05
+            },
+            {
+                name: 'building special',
+                probability: 0.05
+            },
+            {
+                name: 'dragon harvest',
+                probability: 0.05
+            },
+            {
+                name: 'dragonflight',
+                probability: 0.05
+            },
+            {
+                name: 'free sugar lump',
+                probability: 0.05
+            },
+            {
+                name: 'blab',
+                probability: 0.1
+            }
+    ];
+	AddEvent(l('topbarFrenzy'), 'click', function() {
+		if (Game.freeFrenzyCountdown > 0) { return; }
+		Game.freeFrenzyCountdown = 5 * 60 * Game.fps;
+		var s = new Game.shimmer();
+
+        var totalProbability = Game.freeFrenzyProbabilityTable.reduce((sum, effect) => sum + effect.probability, 0); //idk why chatgpt decided to do this but ok, gotta keep it consistent you know
+        var random = Math.random() * totalProbability;
+        var selectedEffect;
+        for (var i = 0; i < activeEffects.length; i++) {
+            random -= activeEffects[i].probability;
+            if (random <= 0) {
+                selectedEffect = activeEffects[i].name;
+                break;
+            }
+        }
+
+		s.force = selectedEffect;
+		Game.Notify('Rewarded!', `Congratulations! You've received a ${selectedEffect.replace(/_/g, ' ')}! Click it now!`,[0, 5], 6);
+	});
+	Game.updateCountdown = function() {
+		if (Game.freeFrenzyCountdown <= 0) { return; }
+		Game.freeFrenzyCountdown--;
+		l('countdown').innerHTML = '' + Math.floor(Game.freeFrenzyCountdown / Game.fps / 60) + ':' + (Math.floor(Game.freeFrenzyCountdown / Game.fps) % 60) 
+		if (Game.freeFrenzyCountdown == 0) { l('countdown').innerHTML = 'ok'; }
+	}
 	
 	Game.updateLog=
 	'<div class="selectable">'+
@@ -2552,6 +2637,7 @@ Game.Launch=function()
 			Game.attachTooltip(l('topbarSteamCC'),'<div style="padding:8px;width:250px;text-align:center;">Get Cookie Clicker on Steam!<br>Featuring music by C418.</div>','this');
 			Game.attachTooltip(l('topbarRandomgen'),'<div style="padding:8px;width:250px;text-align:center;">A thing we made that lets you write random generators.</div>','this');
 			Game.attachTooltip(l('topbarIGM'),'<div style="padding:8px;width:250px;text-align:center;">A thing we made that lets you create your own idle games using a simple scripting language.</div>','this');
+			Game.attachTooltip(l('topbarFrenzy'), '<div style="padding:8px;width:250px;text-align:center;">Receive a random Frenzy reward!<br>You can earn various boosts like cookie multiplication, clicking power, and more.<br>The button can only be used once every 5 minutes.</div>', 'this');
 			l('changeLanguage').innerHTML=loc("Change language");
 			l('links').childNodes[0].nodeValue=loc("Other versions");
 			//l('linkVersionBeta').innerHTML=loc("Beta");
@@ -16303,6 +16389,8 @@ Game.Launch=function()
 				me.totalCookies+=(me.storedTotalCps*Game.globalCpsMult)/Game.fps;
 			}
 			if (Game.prefs.particles && Game.cookies && Game.T%Math.ceil(Game.fps/Math.min(10,Game.cookiesPs))==0) Game.particleAdd();//cookie shower
+
+			Game.updateCountdown();
 			
 			if (Game.T%(Game.fps*10)==0) Game.recalculateGains=1;//recalculate CpS every 10 seconds (for dynamic boosts such as Century egg)
 			
