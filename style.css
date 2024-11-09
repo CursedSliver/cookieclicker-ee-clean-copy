@@ -3333,6 +3333,28 @@ STOP THE FANCY
 	-webkit-filter:none!important;
 }
 
+@keyframes zoomRotate {
+    0% {
+        transform:scale(1) rotate(0)
+    }
+
+    25% {
+        transform:scale(1.2) rotate(15deg)
+    }
+
+    50% {
+        transform:scale(1) rotate(0)
+    }
+
+    75% {
+        transform:scale(0.8) rotate(-15deg)
+    }
+
+    100% {
+        transform:scale(1) rotate(0)
+    }
+}
+
 .frenzy-icon {
     animation: zoomRotate 4s infinite
 }
