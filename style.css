@@ -3333,5 +3333,9 @@ STOP THE FANCY
 	-webkit-filter:none!important;
 }
 
+.frenzy-icon {
+    animation: zoomRotate 4s infinite
+}
+
 
 /**{overflow:hidden!important;}*/
