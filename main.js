@@ -16995,5 +16995,9 @@ window.onload=function()
 		if (App && !lang) showLangSelect(loadLangAndLaunch);
 		else if (!lang) {loadLangAndLaunch('EN',true);}
 		else loadLangAndLaunch(lang);
+
+		//this is a bit stupid but whatever
+		Game.heralds = 100;
+		l('heraldsAmount').innerText = Game.heralds;
 	}
 };
